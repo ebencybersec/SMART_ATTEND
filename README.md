@@ -55,20 +55,30 @@ It can operate in both offline mode and Local Area Network (LAN) mode.
 ## System Architecture
 
 ```text
-Browser
-   |
-   |
-   V
-Flask Server
-   |
-   +---- Authentication
-   |
-   +---- Face Recognition
-   |
-   +---- Attendance Module
-   |
-   V
-JSON Database
+                    +----------------------+
+                    |      Web Browser     |
+                    +----------+-----------+
+                               |
+                               |
+                          HTTP Requests
+                               |
+                               ▼
+                    +----------------------+
+                    |     Flask Server     |
+                    +----------+-----------+
+                               |
+        +----------------------+----------------------+
+        |                      |                      |
+        |                      |                      |
+ Authentication        Face Recognition      Attendance Module
+        |                      |                      |
+        +----------------------+----------------------+
+                               |
+                               ▼
+                    +----------------------+
+                    |    JSON Database     |
+                    | attendance_db.json   |
+                    +----------------------+
 ```
 
 ---
