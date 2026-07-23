@@ -54,32 +54,17 @@ It can operate in both offline mode and Local Area Network (LAN) mode.
 
 ## System Architecture
 
-```text
-                    +----------------------+
-                    |      Web Browser     |
-                    +----------+-----------+
-                               |
-                               |
-                          HTTP Requests
-                               |
-                               ▼
-                    +----------------------+
-                    |     Flask Server     |
-                    +----------+-----------+
-                               |
-        +----------------------+----------------------+
-        |                      |                      |
-        |                      |                      |
- Authentication        Face Recognition      Attendance Module
-        |                      |                      |
-        +----------------------+----------------------+
-                               |
-                               ▼
-                    +----------------------+
-                    |    JSON Database     |
-                    | attendance_db.json   |
-                    +----------------------+
-```
+### SMART_ATTEND SYSTEM ARCHITECTURE
+
+![SMART_ATTEND SYSTEM ARCHITECTURE](screenshots/SMART_ATTEND_SYSTEM_ARCHITECTURE.png)
+
+### ATTENDANCE WORKFLOW WITH FACE RECOGNITION AND SCHEDULE VALIDATION
+
+![ATTENDANCE WORKFLOW WITH FACE RECOGNITION AND SCHEDULE VALIDATION](screenshots/FACE_RECOGNITION_ATTENDANCE_WORKFLOW.png)
+
+### ADMIN POWER IN SMART_ATTEND
+
+![ADMIN POWER IN SMART_ATTEND](screenshots/SMART_ATTEND_ADMIN_DASHBOARD.png)
 
 ---
 
