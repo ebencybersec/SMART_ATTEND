@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Courses • ATU</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Manage Courses</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>Add Course</h3>
+      <div class="grid" style="grid-template-columns: 1fr 2fr; gap:16px;">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+          <input id="courseId" placeholder="Course ID">
+          <input id="courseName" placeholder="Course Name">
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr repeat(3, 1fr) repeat(3, 1fr) auto; align-items:end;">
+          <select id="day">
+            <option value="">Day</option>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+          <input id="sh" placeholder="Start H (1-12)">
+          <input id="sm" placeholder="Start M (00-59)">
+          <select id="sp"><option>AM</option><option>PM</option></select>
+          <input id="eh" placeholder="End H (1-12)">
+          <input id="em" placeholder="End M (00-59)">
+          <select id="ep"><option>AM</option><option>PM</option></select>
+          <button class="btn" onclick="addCourse()">Add</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top:16px;">All Courses</h3>
+      <table id="coursesTable">
+        <thead><tr><th>ID</th><th>Name</th><th>Schedule</th><th>Set/Change Schedule</th><th>Remove</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <a class="btn outline" href="{{ url_for('dashboard') }}">⬅ Back</a>
+    </div>
+  </div>
+
+  <script>
+    async function loadCourses() {
+      const res = await fetch("/api/courses");
+      const data = await res.json();
+      const tbody = document.querySelector("#coursesTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${c.id}</td>
+          <td>${c.name}</td>
+          <td>${c.schedule || ""}</td>
+          <td>
+            <div class="grid" style="grid-template-columns: 1fr repeat(3,1fr) repeat(3,1fr) auto; gap:6px;">
+              <select id="day-${c.name}">
+                <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+                <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+              </select>
+              <input id="sh-${c.name}" placeholder="H">
+              <input id="sm-${c.name}" placeholder="M">
+              <select id="sp-${c.name}"><option>AM</option><option>PM</option></select>
+              <input id="eh-${c.name}" placeholder="H">
+              <input id="em-${c.name}" placeholder="M">
+              <select id="ep-${c.name}"><option>AM</option><option>PM</option></select>
+              <button class="btn" onclick="setSchedule('${c.name}')">Save</button>
+            </div>
+          </td>
+          <td><button class="btn outline" onclick="removeCourse('${c.name}')">Remove</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function addCourse() {
+      const id = document.getElementById("courseId").value.trim();
+      const name = document.getElementById("courseName").value.trim();
+      const day = document.getElementById("day").value;
+      const sh = document.getElementById("sh").value; const sm = document.getElementById("sm").value; const sp = document.getElementById("sp").value;
+      const eh = document.getElementById("eh").value; const em = document.getElementById("em").value; const ep = document.getElementById("ep").value;
+      if (!id || !name) { alert("Course ID & Name required"); return; }
+      const body = { id, name };
+      if (day && sh && sm && sp && eh && em && ep) {
+        Object.assign(body, { day, start_hour: sh, start_min: sm, start_period: sp, end_hour: eh, end_min: em, end_period: ep });
+      }
+      const res = await fetch("/api/courses", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      document.getElementById("courseId").value="";
+      document.getElementById("courseName").value="";
+      loadCourses();
+    }
+
+    async function setSchedule(name) {
+      const day = document.getElementById(`day-${name}`).value;
+      const sh = document.getElementById(`sh-${name}`).value;
+      const sm = document.getElementById(`sm-${name}`).value;
+      const sp = document.getElementById(`sp-${name}`).value;
+      const eh = document.getElementById(`eh-${name}`).value;
+      const em = document.getElementById(`em-${name}`).value;
+      const ep = document.getElementById(`ep-${name}`).value;
+      const res = await fetch("/api/courses/schedule", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ name, day, start_hour: sh, start_min: sm, start_period: sp, end_hour: eh, end_min: em, end_period: ep })
+      });
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      loadCourses();
+    }
+
+    async function removeCourse(name) {
+      const res = await fetch("/api/courses", { method:"DELETE", headers: {"Content-Type":"application/json"}, body: JSON.stringify({ name })});
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      loadCourses();
+    }
+
+    loadCourses();
+  </script>
+</body>
+</html>

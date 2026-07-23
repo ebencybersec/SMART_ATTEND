@@ -1,0 +1,27 @@
+{
+    "users": [
+        {
+            "username": "admin",
+            "password": "password",
+            "role": "admin",
+            "assigned_courses": []
+        },
+        {
+            "username": "rep1",
+            "password": "password",
+            "role": "course_rep",
+            "assigned_courses": []
+        },
+        {
+            "username": "lect1",
+            "password": "password",
+            "role": "lecturer",
+            "assigned_courses": [
+                "Database Systems"
+            ]
+        }
+    ],
+    "students": [],
+    "attendance_records": [],
+    "courses": []
+}

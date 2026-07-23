@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login • ATU Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Accra Technical University • SmartAttend</h1>
+  </div>
+
+  <div class="container">
+    <div class="card" style="max-width:480px;margin:auto;">
+      <h2>Sign in</h2>
+      <form method="POST" class="grid">
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button class="btn" type="submit">Login</button>
+      </form>
+      {% if error %}
+      <p class="err" style="color:#b32020;margin-top:10px">{{ error }}</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

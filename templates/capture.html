@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Student • ATU Attendance</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .video-wrap { position: relative; width: 100%; max-width: 640px; }
+    #overlay { position: absolute; left: 0; top: 0; }
+    .camera-toolbar {
+      margin: 8px 0;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .camera-toolbar label { font-weight: 600; }
+    video {
+      width: 100%;
+      height: auto;
+      background: #000;
+    }
+  </style>
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Register Student</h1>
+  </div>
+
+  <div class="container" id="capture-page">
+    <div class="card">
+      <div class="grid" style="grid-template-columns: 1fr 1fr;align-items:start;">
+        <!-- Left side: form -->
+        <div>
+          <label>Name</label>
+          <input id="studentName" placeholder="Student Name">
+          <label style="margin-top:8px;display:block;">Student ID</label>
+          <input id="studentId" placeholder="ID e.g. ATU12345">
+          <button class="btn" style="margin-top:12px" onclick="captureStudent()">📸 Capture & Register</button>
+          <p id="status">Looking for a face…</p>
+          <a class="btn outline" href="{{ url_for('dashboard') }}">⬅ Back</a>
+        </div>
+
+        <!-- Right side: camera -->
+        <div class="video-wrap">
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="overlay"></canvas>
+
+          <!-- 👇 New camera controls -->
+          <div class="camera-toolbar">
+            <label for="cameraSelect">Camera:</label>
+            <select id="cameraSelect"></select>
+            <button id="switchCam" type="button" class="btn">Switch</button>
+          </div>
+          <!-- 👆 End camera controls -->
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

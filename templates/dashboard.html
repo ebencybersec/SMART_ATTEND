@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard • ATU Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Accra Technical University • SmartAttend</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>Welcome {{ user.username }} ({{ user.role|capitalize }})</h2>
+
+      <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin: 12px 0;">
+        <div class="card">
+          <h3>Total Students</h3>
+          <p style="font-size:28px;margin:6px 0">{{ stats.students }}</p>
+        </div>
+        {% if user.role == "admin" and stats.users is not none %}
+        <div class="card">
+          <h3>Total Users</h3>
+          <p style="font-size:28px;margin:6px 0">{{ stats.users }}</p>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if user.role == "admin" %}
+        <h3>Admin Actions</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:12px;">
+          <a class="btn" href="{{ url_for('admin_courses') }}">📘 Manage Courses</a>
+          <a class="btn" href="{{ url_for('admin_students') }}">🎓 Manage Students</a>
+          <a class="btn" href="{{ url_for('admin_users') }}">👤 Manage Users</a>
+          <a class="btn" href="{{ url_for('admin_records') }}">📑 View Records</a>
+        </div>
+      {% elif user.role == "lecturer" %}
+        <h3>Lecturer</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:12px;">
+          <a class="btn" href="{{ url_for('capture_page') }}">📸 Register Student</a>
+          <a class="btn" href="{{ url_for('take_attendance_page') }}">📝 Take Attendance</a>
+          <a class="btn" href="{{ url_for('view_attendance_page') }}">📑 View Attendance</a>
+        </div>
+      {% elif user.role == "course_rep" %}
+        <h3>Course Representative</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:12px;">
+          <a class="btn" href="{{ url_for('capture_page') }}">📸 Register Student</a>
+          <a class="btn" href="{{ url_for('take_attendance_page') }}">📝 Take Attendance (All Courses)</a>
+          <a class="btn" href="{{ url_for('view_attendance_page') }}">📑 View Attendance (All Courses)</a>
+        </div>
+      {% endif %}
+
+      <div style="margin-top:16px">
+        <a class="btn outline" href="{{ url_for('logout') }}">🚪 Logout</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

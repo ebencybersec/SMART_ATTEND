@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Users • ATU</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Manage Users</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>Add User</h3>
+      <div class="grid" style="grid-template-columns: 1fr 1fr 1fr 2fr auto;">
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+        <select id="role" onchange="toggleCoursesInput()">
+          <option value="admin">Admin</option>
+          <option value="lecturer">Lecturer</option>
+          <option value="course_rep">Course Rep</option>
+        </select>
+        <input id="assignedCourses" placeholder="Assigned Courses (lecturer only, comma separated)" disabled>
+        <button class="btn" onclick="addUser()">Add</button>
+      </div>
+
+      <h3 style="margin-top:16px;">All Users</h3>
+      <table id="usersTable">
+        <thead><tr><th>Username</th><th>Role</th><th>Courses</th><th>Remove</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <a class="btn outline" href="{{ url_for('dashboard') }}">⬅ Back</a>
+    </div>
+  </div>
+
+  <script>
+    function toggleCoursesInput() {
+      const role = document.getElementById('role').value;
+      const ac = document.getElementById('assignedCourses');
+      if (role === 'lecturer') { ac.disabled = false; }
+      else { ac.disabled = true; ac.value = ""; }
+    }
+
+    async function loadUsers() {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      const tbody = document.querySelector("#usersTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${u.username}</td>
+          <td>${u.role}</td>
+          <td>${(u.assigned_courses || []).join(", ")}</td>
+          <td><button class="btn outline" onclick="removeUser('${u.username}')">Remove</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function addUser() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+      let assigned_courses = [];
+      if (role === "lecturer") {
+        const raw = document.getElementById("assignedCourses").value.trim();
+        assigned_courses = raw ? raw.split(",").map(s => s.trim()).filter(Boolean) : [];
+      }
+      const res = await fetch("/api/users", {
+        method: "POST", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password, role, assigned_courses })
+      });
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("role").value = "admin";
+      toggleCoursesInput();
+      loadUsers();
+    }
+
+    async function removeUser(username) {
+      const res = await fetch("/api/users", {
+        method: "DELETE", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ username })
+      });
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      loadUsers();
+    }
+
+    toggleCoursesInput();
+    loadUsers();
+  </script>
+</body>
+</html>

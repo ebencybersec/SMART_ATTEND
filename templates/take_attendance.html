@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Take Attendance • ATU</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .video-wrap { position: relative; width: 100%; max-width: 640px; }
+    #overlay { position: absolute; left: 0; top: 0; }
+    .camera-toolbar {
+      margin: 8px 0;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .camera-toolbar label { font-weight: 600; }
+    video { width: 100%; height: auto; background: #000; }
+  </style>
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Take Attendance</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="grid" style="grid-template-columns: 1fr 1fr; align-items:start;">
+        <!-- Left: controls & status -->
+        <div>
+          <label>Course</label>
+          <select id="course">
+            <option value="">-- select course --</option>
+            {% for c in courses %}
+              <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
+          </select>
+
+          <div style="margin-top:12px;">
+            <button class="btn" onclick="startAttendance()">▶ Start Attendance</button>
+            <button class="btn outline" onclick="stopAttendance()">■ Stop</button>
+          </div>
+
+          <p id="att-status">Camera ready…</p>
+          <p><strong>Schedule:</strong> <span id="scheduleText">—</span></p>
+
+          <h3>Recently Marked Present</h3>
+          <ul id="recognized"></ul>
+
+          <a class="btn outline" href="{{ url_for('dashboard') }}">⬅ Back</a>
+        </div>
+
+        <!-- Right: camera preview -->
+        <div class="video-wrap">
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="overlay"></canvas>
+
+          <!-- Camera controls -->
+          <div class="camera-toolbar">
+            <label for="cameraSelect">Camera:</label>
+            <select id="cameraSelect"></select>
+            <button id="switchCam" type="button" class="btn">Switch</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Students • ATU</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='img/atu_logo.png') }}" alt="ATU">
+    <h1>Manage Students</h1>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3>All Students</h3>
+      <table id="studentsTable">
+        <thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <a class="btn outline" href="{{ url_for('dashboard') }}">⬅ Back</a>
+    </div>
+  </div>
+
+  <script>
+    async function loadStudents() {
+      const res = await fetch("/api/students");
+      const data = await res.json();
+      const tbody = document.querySelector("#studentsTable tbody");
+      tbody.innerHTML = "";
+      data.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${s.id}</td>
+          <td>${s.name}</td>
+          <td><button class="btn outline" onclick="removeStudent('${s.id}')">Remove</button></td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    async function removeStudent(id) {
+      const res = await fetch("/api/students", {
+        method: "DELETE", headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ id })
+      });
+      if (!res.ok) alert((await res.json()).error || "Failed");
+      loadStudents();
+    }
+    loadStudents();
+  </script>
+</body>
+</html>
