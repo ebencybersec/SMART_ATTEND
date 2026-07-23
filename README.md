@@ -64,7 +64,7 @@ It can operate in both offline mode and Local Area Network (LAN) mode.
 
 ### ADMIN POWER IN SMART_ATTEND
 
-![ADMIN POWER IN SMART_ATTEND](screenshots/SMART_ATTEND_ADMIN_DASHBOARD.png)
+![ADMIN POWER IN SMART_ATTEND](screenshots/SMART_ATTEND_ADMIN_PRIVILEGE'S.png)
 
 ---
 
